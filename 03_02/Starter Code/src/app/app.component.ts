@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+// step 1
+import { Subject } from 'rxjs';
+// step 2
+import { filter } from 'rxjs';
 
 interface Weather {
   day: string;
@@ -12,6 +16,8 @@ interface Weather {
 })
 export class AppComponent implements OnInit {
   displayWeather: Weather[] = [];
+  // step 3
+  weatherSubject = new Subject<Weather>();
 
   private weatherData = [
     {
@@ -44,8 +50,20 @@ export class AppComponent implements OnInit {
     },
   ];
 
-  ngOnInit() { }
+  ngOnInit() { 
+    // step 5
+    this.weatherSubject.pipe(filter(weather => {
+      return weather.temperature >= 72;
+    })).subscribe( weather => {
+      // step 6
+      this.displayWeather.push(weather);
+    });
+  }
 
   getWeatherData() {
+    // step 4
+    for (const weather of this.weatherData) {
+      this.weatherSubject.next(weather);
+    }
   }
 }
