@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+// step 1
+import { BehaviorSubject  } from 'rxjs';
 
 const SNOWMAN_IMAGE = '..\\assets\\icons\\snowman image.jpg';
 const SUN_IMAGE = '..\\assets\\icons\\sun.jpg';
@@ -11,11 +13,23 @@ const SUN_IMAGE = '..\\assets\\icons\\sun.jpg';
 export class AppComponent implements OnInit {
   inputTemperature = 0;
   imageSrc = SUN_IMAGE;
+  // step 2
+  temperatureSubject$ = new BehaviorSubject<number>(72);
 
   ngOnInit() {
+    // step 4
+    this.temperatureSubject$.subscribe((temperature) => {
+      if (temperature >= 40) {
+        this.imageSrc = SUN_IMAGE;
+      } else {
+        this.imageSrc = SNOWMAN_IMAGE;
+      }
+    })
   }
 
   setTemperature() {
+    // step 3
+    this.temperatureSubject$.next(this.inputTemperature);
   }
 
   setInputTemperature(event: Event) {
