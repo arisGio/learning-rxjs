@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
+// step 1
+import { Subject } from 'rxjs';
+// step 2
+import { mergeMap, delay } from 'rxjs/operators';
 
 interface Weather {
   city: string;
@@ -14,11 +18,23 @@ interface Weather {
 })
 export class AppComponent implements OnInit {
   displayWeather: Weather[] = [];
+  // step 3
+  citySubject$ = new Subject<string>();
 
   ngOnInit() {
+    // step 5
+    this.citySubject$.pipe(mergeMap((city) => {
+      return this.getWeather(city).pipe(delay(1000));
+    })).subscribe((weather) => {
+      this.displayWeather.push(weather);
+    }
+
+    )
   }
 
   submitCity(city: string) {
+    // step 4
+    this.citySubject$.next(city)
   }
 
   getWeather(city: string): Observable<Weather> {
